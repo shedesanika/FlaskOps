@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flaskapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flaskapp
+  template:
+    metadata:
+      labels:
+        app: flaskapp
+    spec:
+      containers:
+      - name: flaskapp
+        image: flaskops-flaskapp:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 5000
+        env:
+        - name: DB_HOST
+          value: mysql
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: flaskapp
+spec:
+  type: NodePort
+  selector:
+    app: flaskapp
+  ports:
+  - port: 5000
+    targetPort: 5000
+    nodePort: 30007
